@@ -45,14 +45,12 @@ struct twostack{
 			cout<<arr[top1]<<"\t";
 			top1--;
 		}
-		exit(1);
 	}
 	void print2(){
 		while(top2<cap){
 			cout<<arr[top2]<<"\t";
 			top2++;
 		}
-		exit(1);
 	}
 	
 };
