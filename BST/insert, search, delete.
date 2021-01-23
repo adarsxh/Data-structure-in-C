@@ -1,0 +1,127 @@
+#include<iostream>
+#include<queue>
+using namespace std;
+
+struct node{
+	int key;
+	node *right;
+	node *left;
+	node(int x){
+		key = x;
+		right = NULL;
+		left = NULL;
+	}
+};
+
+node *insert(node *root, int x){
+	if(root==NULL)
+		return new node(x);
+	else if(root->key<x)
+		root->right = insert(root->right,x);
+	else if(root->key>x)
+		root->left = insert(root->left,x);
+	return root;
+}
+
+node *itinsert(node *root, int x){
+	node *temp = new node(x);
+	node *parent = NULL;
+	node *curr = root;
+	while(curr!=NULL){
+		parent = curr;
+		if(curr->key>x)
+			curr=curr->left;
+		else if(curr->key<x)
+			curr=curr->right;
+	}
+	if(parent == NULL)
+		return temp;
+	if(parent->key>x)
+		parent->left=temp;
+	else
+		parent->right=temp;
+	return root;
+}
+
+void iterativeprintm2(node *root){
+	if(root==NULL)
+		return;
+	queue<node *>q;
+	q.push(root);
+	while(q.empty()==false){
+		int count =q.size();
+		for(int i=0;i<count;i++){
+			node *curr=q.front();
+			q.pop();
+			cout<<(curr->key)<<" ";
+			if(curr->left!=NULL)
+				q.push(curr->left);
+			if(curr->right!=NULL)
+				q.push(curr->right);
+		}
+		cout<<"\n";
+	}
+}
+bool search(node *root, int x){
+	if(root==NULL)
+		return false;
+	else if(root->key==x)
+		return root;
+	else if(root->key>x)
+		return search(root->left,x);
+	else
+		return search(root->right, x);
+}
+
+node *getsuccessor(node *curr){						//returns least greater element from the tree
+	curr = curr->right;
+	while(curr!=NULL &&curr->left!=NULL){
+		curr=curr->left;
+	}
+	return curr;
+}
+
+node *delnode(node *root, int x){
+	if(root==NULL)                      //if empty tree is passed
+		return root;
+	if(root->key>x)						        	//finding key
+		root->left=delnode(root->left,x);
+	else if(root->key<x)
+		root->right= delnode(root->right, x);
+	else{								            	//key is found
+		if(root->left==NULL){		    		// if only right child is present
+			node *temp=root->right;
+			delete root;
+			return temp;
+		}
+		else if(root->right==NULL){			//if only left child is present
+			node *temp = root->left;
+			delete root;
+			return temp;
+		}
+		else{							          	//if both child is present
+			node *succ = getsuccessor(root);
+			root->key=succ->key;
+			root->right = delnode(root->right, succ->key);
+		}
+	}
+	return root;
+}
+
+int main(){
+	node *root=	NULL;
+	root = itinsert(root, 10);
+	root = itinsert(root, 4);
+	root = itinsert(root, 13);
+	root = itinsert(root, 11);
+	root = itinsert(root, 6);
+	root = itinsert(root, 3);
+	root = itinsert(root, 11);
+	iterativeprintm2(root);
+	if(search(root, 2))
+		cout<<"found"<<endl;
+	else
+		cout<<"not found"<<endl;
+	root = delnode(root, 13);
+	iterativeprintm2(root);
+}
