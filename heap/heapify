@@ -1,0 +1,90 @@
+#include<iostream>
+using namespace std;
+
+struct minh{
+	int *arr;
+	int size;
+	int capacity;
+	minh(int x){
+		arr = new int(x);
+		size=0;
+		capacity = x;
+	}
+	int left(int i){
+		//if(size>2*i+1)
+			return 2*i+1;
+		
+	}
+	int right(int i){
+		//if(size>2*i+2)
+			return 2*i+2;
+		//else 
+		//	return -1;
+	}
+	int parent(int i){
+		return (i-1)/2;
+	}
+	void insert(int x){
+		if(capacity == size)
+			return;
+		size++;
+		arr[size-1] = x;
+		for(int i=size-1;i!=0&& arr[parent(i)]>arr[i];){
+			swap(arr[i],arr[parent(i)]);
+			i=parent(i);
+		}
+	}
+	int minheapify(int i){
+		int lt=left(i);
+		int rt=right(i);
+		int smallest = i;
+		if(lt<size&&arr[lt]<arr[i])
+			smallest = lt;
+		if(rt<size&&arr[rt]<arr[smallest])
+			smallest = rt;
+		if(smallest!=i){
+			swap(arr[i],arr[smallest]);
+			minheapify(smallest);
+		}
+	}
+	int extractmin(){
+		if(size==0)
+			return INT_MAX;
+		if(size==1){
+			size--;
+			return arr[0];
+		}
+		swap(arr[0],arr[size-1]);
+		size--;
+		minheapify(0);
+		return arr[size];
+	}
+	void printheap(){
+		int i=0;
+		while(i<size){
+			cout<<arr[i]<<" ";
+			i++;
+		}
+	}
+};
+
+int main(){
+	minh heap(10);
+	heap.insert(30);
+	heap.insert(27);
+	heap.insert(38);
+	heap.insert(21);
+	heap.insert(90);
+	heap.insert(12);
+	heap.insert(93);
+	cout<<heap.left(2)<<endl;
+	cout<<heap.right(2)<<endl;
+	cout<<heap.parent(5)<<endl;
+	cout<<heap.size<<endl;
+	heap.printheap();
+	cout<<endl;
+	cout<<heap.extractmin()<<endl;
+	heap.printheap();
+	
+	
+}
